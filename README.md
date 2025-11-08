@@ -92,10 +92,61 @@ gunicorn -c gunicorn.conf.py wsgi:app
 
 6. Open your browser and navigate to:
 ```
-http://127.0.0.1:5000
+http://127.0.0.1:5001
 ```
 
 ### Docker Setup
+
+#### Using Docker Compose (Recommended)
+
+1. Create a `.env` file (optional) with your configuration:
+```bash
+SECRET_KEY=your-secret-key-here
+LOG_LEVEL=info
+LOG_TO_CONSOLE=false
+```
+
+2. Build and run with Docker Compose (builds automatically if image doesn't exist):
+```bash
+docker-compose up -d
+```
+
+Or to force a rebuild:
+```bash
+docker-compose up -d --build
+```
+
+3. Access the application at `http://localhost:5001`
+
+4. View logs:
+```bash
+# View logs in terminal
+docker-compose logs -f
+
+# View logs from file (Docker logs are also saved to files)
+# Docker container logs: ~/.docker/containers/<container-id>/<container-id>-json.log
+# Application logs: ./logs/app.log
+# Gunicorn access logs: ./logs/gunicorn_access.log
+# Gunicorn error logs: ./logs/gunicorn_error.log
+
+# View application logs
+tail -f logs/app.log
+
+# View gunicorn access logs
+tail -f logs/gunicorn_access.log
+
+# View gunicorn error logs
+tail -f logs/gunicorn_error.log
+```
+
+5. Stop the container:
+```bash
+docker-compose down
+```
+
+**Note:** The first time you run `docker-compose up`, it will automatically build the image. Subsequent runs will use the cached image unless you use `--build` flag.
+
+#### Using Docker directly
 
 1. Build the Docker image:
 ```bash
@@ -104,13 +155,26 @@ docker build -t investment-calculator .
 
 2. Run the container:
 ```bash
-docker run -p 5000:5000 \
+docker run -d -p 5001:5000 \
   -e SECRET_KEY="your-secret-key" \
   -e FLASK_ENV=production \
+  -e LOG_LEVEL=info \
+  -v $(pwd)/logs:/app/logs \
+  --name investment-calculator \
   investment-calculator
 ```
 
-3. Access the application at `http://localhost:5000`
+3. Check container status:
+```bash
+docker ps
+docker logs investment-calculator
+```
+
+4. Stop the container:
+```bash
+docker stop investment-calculator
+docker rm investment-calculator
+```
 
 ### Environment Variables
 
@@ -118,6 +182,8 @@ docker run -p 5000:5000 \
 - `FLASK_DEBUG`: Set to `"true"` for development, `"false"` for production
 - `FLASK_ENV`: Set to `production` for production deployment
 - `LOG_LEVEL`: Logging level (default: `info`)
+- `LOG_TO_CONSOLE`: Enable console logging (default: `false`)
+- `LOG_DIR`: Directory for log files (default: `/app/logs` in container)
 
 ## Usage
 

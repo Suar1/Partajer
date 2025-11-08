@@ -14,8 +14,10 @@ timeout = 60
 keepalive = 2
 
 # Logging
-accesslog = "-"
-errorlog = "-"
+# Write to files if LOG_DIR is set, otherwise use stdout/stderr
+log_dir = os.environ.get("LOG_DIR", "/app/logs")
+accesslog = os.path.join(log_dir, "gunicorn_access.log") if log_dir else "-"
+errorlog = os.path.join(log_dir, "gunicorn_error.log") if log_dir else "-"
 loglevel = os.environ.get("LOG_LEVEL", "info").lower()
 access_log_format = '%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s" %(D)s'
 
