@@ -3,33 +3,74 @@
 {% block content %}
 <div style="display: flex; gap: 20px;">
     <div style="flex: 1; min-width: 0;">
-<h1>Investment Share Calculator</h1>
+<h1 id="page-title" data-i18n="title">Investment Share Calculator</h1>
+
+<!-- Share Budget Calculation Panel - Floating at top -->
+<div id="calculation-panel" class="calculation-panel calc-panel-floating">
+    <div class="calc-panel-header">
+        <h3 data-i18n="summary">Share Budget Breakdown</h3>
+        <div class="calc-panel-controls">
+            <label class="calc-visibility-toggle" title="Show/hide calculation panel">
+                <input type="checkbox" id="calc-visibility-checkbox" checked aria-label="Show calculation panel">
+                <span class="calc-checkmark"><span class="checkmark-text">✓</span></span>
+            </label>
+            <button type="button" class="calc-toggle-btn" id="calc-toggle-btn" aria-label="Minimize/expand calculation panel" title="Minimize/expand calculation panel">
+                <span class="calc-toggle-icon">−</span>
+            </button>
+        </div>
+    </div>
+    <div id="calc-content">
+        <div class="calc-item">
+            <div class="calc-item-label" data-i18n="basePool">Base Pool:</div>
+            <div class="calc-item-value" id="calc-base-pool">0.00%</div>
+            <div class="calc-breakdown" id="calc-base-breakdown"></div>
+        </div>
+        <div class="calc-item">
+            <div class="calc-item-label" data-i18n="rolePools">Role Pools:</div>
+            <div class="calc-item-value" id="calc-role-pools">0.00%</div>
+            <div class="calc-breakdown" id="calc-role-breakdown"></div>
+        </div>
+        <div class="calc-item" id="calc-property-item" style="display: none;">
+            <div class="calc-item-label" data-i18n="propertyPool">Property Pool:</div>
+            <div class="calc-item-value" id="calc-property-pool">0.00%</div>
+            <div class="calc-breakdown" id="calc-property-breakdown"></div>
+        </div>
+        <div class="calc-item" id="calc-total-item">
+            <div class="calc-item-label" data-i18n="total">Total:</div>
+            <div class="calc-item-value calc-total" id="calc-total">0.00%</div>
+            <div class="calc-breakdown" id="calc-total-status"></div>
+        </div>
+        <div style="margin-top: 15px; padding: 10px; background: #f5f5f5; border-radius: 4px; font-size: 0.9em; color: #666;">
+            <strong data-i18n="warnOverBudget">Note: Total must equal 100%. Adjust highlighted fields to fix.</strong>
+        </div>
+    </div>
+</div>
 
 <div id="live-distribution" class="role-distribution" style="display: none;">
-    <h3 style="margin-top: 0;">Current Role Distribution</h3>
+    <h3 id="live-dist-title" style="margin-top: 0;" data-i18n="currentDist">Current Role Distribution</h3>
     <div class="role-stat">
-        <strong>Developers:</strong> <span id="dev-count">0</span> person(s)
-        - Each gets <span id="dev-bonus">0.00</span>% bonus
-        <span class="help-ico" id="dev-bonus-help" title="This is the per-developer share from the Developer bonus pool. It equals Total Developer Bonus ÷ number of developers." aria-label="Per-developer bonus info">
-            !<span class="tooltip"><b>Per-developer bonus</b>: Total Developer Bonus ÷ developer count.</span>
+        <strong id="dev-label" data-i18n="dev">Developers:</strong> <span id="dev-count">0</span> <span class="person-text" data-i18n="person">person(s)</span>
+        - <span class="each-gets-text" data-i18n="liveEachGets">Each gets</span> <span id="dev-bonus">0.00</span>% <span class="bonus-text" data-i18n="bonus">bonus</span>
+        <span class="help-ico" id="dev-bonus-help" data-i18n-title="ttPerDeveloperTitle" title="Per-developer bonus" aria-label="Per-developer bonus info">
+            !<span class="tooltip" data-i18n="ttPerDeveloperBody"><b>Per-developer bonus</b>: Total Developer Bonus ÷ developer count.</span>
         </span>
     </div>
     <div class="role-stat">
-        <strong>Constructors:</strong> <span id="const-count">0</span> person(s)
-        - Each gets <span id="const-bonus">0.00</span>% bonus
-        <span class="help-ico" id="const-bonus-help" title="Per-constructor share from the Constructor bonus pool." aria-label="Per-constructor bonus info">
-            !<span class="tooltip"><b>Per-constructor bonus</b>: Total Constructor Bonus ÷ constructor count.</span>
+        <strong id="const-label" data-i18n="const">Constructors:</strong> <span id="const-count">0</span> <span class="person-text" data-i18n="person">person(s)</span>
+        - <span class="each-gets-text" data-i18n="liveEachGets">Each gets</span> <span id="const-bonus">0.00</span>% <span class="bonus-text" data-i18n="bonus">bonus</span>
+        <span class="help-ico" id="const-bonus-help" data-i18n-title="ttPerConstructorTitle" title="Per-constructor bonus" aria-label="Per-constructor bonus info">
+            !<span class="tooltip" data-i18n="ttPerConstructorBody"><b>Per-constructor bonus</b>: Total Constructor Bonus ÷ constructor count.</span>
         </span>
     </div>
     <div class="role-stat">
-        <strong>Investors:</strong> <span id="inv-count">0</span> person(s)
-        - Each gets <span id="inv-bonus">0.00</span>% bonus
-        <span class="help-ico" id="inv-bonus-help" title="Per-investor share from the Investor bonus pool." aria-label="Per-investor bonus info">
-            !<span class="tooltip"><b>Per-investor bonus</b>: Total Investor Bonus ÷ investor count.</span>
+        <strong id="inv-label" data-i18n="inv">Investors:</strong> <span id="inv-count">0</span> <span class="person-text" data-i18n="person">person(s)</span>
+        - <span class="each-gets-text" data-i18n="liveEachGets">Each gets</span> <span id="inv-bonus">0.00</span>% <span class="bonus-text" data-i18n="bonus">bonus</span>
+        <span class="help-ico" id="inv-bonus-help" data-i18n-title="ttPerInvestorTitle" title="Per-investor bonus" aria-label="Per-investor bonus info">
+            !<span class="tooltip" data-i18n="ttPerInvestorBody"><b>Per-investor bonus</b>: Total Investor Bonus ÷ investor count.</span>
         </span>
     </div>
     <div class="role-stat" style="margin-top: 10px;">
-        <strong>Cash Investment (excl. property):</strong> €<span id="total-investment">0.00</span>
+        <strong id="total-invest-label" data-i18n="cashInvest">Cash Investment (excl. property):</strong> €<span id="total-investment">0.00</span>
     </div>
 </div>
 
@@ -39,23 +80,23 @@
     {{ form.hidden_tag() }}
     
     <div class="role-section">
-        <h2 class="help-wrap">
+        <h2 id="role-bonus-title" class="help-wrap" data-i18n="roleTotals">
             Role Total Bonus Percentages
-            <span class="help-ico" id="role-pools-help" title="Sum of all role bonus pools. If the total share budget exceeds 100%, results are blocked." aria-label="Role bonuses help">
-                !<span class="tooltip"><b>Role bonuses</b> are a fixed % budget split equally among members of each role. Ensure total share ≤ 100% (Base + Role + Property).</span>
+            <span class="help-ico" id="role-pools-help" data-i18n-title="ttRolePools" title="Role bonuses" aria-label="Role bonuses help">
+                !<span class="tooltip" data-i18n="ttRolePools"><b>Role bonuses</b> are a fixed % budget split equally among members of each role. Ensure total share ≤ 100% (Base + Role + Property).</span>
             </span>
         </h2>
-        <p class="role-info">Note: Each role's bonus percentage will be divided equally among all members with that role.</p>
+        <p id="role-bonus-note" class="role-info" data-i18n="roleNote">Note: Each role's bonus percentage will be divided equally among all members with that role.</p>
         
         <div id="budget-bar" style="height:14px;border-radius:7px;overflow:hidden;background:#e5e7eb;margin:8px 0 4px 0;">
             <div id="bar-base" style="height:100%;width:0;background:#93c5fd;float:left"></div>
             <div id="bar-role" style="height:100%;width:0;background:#86efac;float:left"></div>
             <div id="bar-prop" style="height:100%;width:0;background:#fca5a5;float:left"></div>
         </div>
-        <div id="budget-bar-legend" style="font-size:12px;color:#555;">Base / Role / Property</div>
+        <div id="budget-bar-legend" style="font-size:12px;color:#555;" data-i18n="budgetBarLegend">Base / Role / Property</div>
 
         <div class="field-row">
-            <label class="help-wrap">
+            <label class="help-wrap" data-i18n="devBonusLabel">
                 {{ form.developer_bonus.label.text }}
                 <span class="help-ico" title="Enter the total % budget reserved for all developers. It will be split equally among developers." aria-label="Developer Bonus help">
                     !<span class="tooltip"><b>Total Developer Bonus</b>: Fixed % pool shared equally by all developers.</span>
@@ -63,15 +104,14 @@
             </label>
             {{ form.developer_bonus(value=form.developer_bonus.data or 40) }}
             {% if role_counts.developer %}
-            <div class="current-split">
-                Current split: {{ "%.2f"|format(role_bonuses_per_person.developer) }}% per developer 
-                ({{ role_counts.developer }} developers)
+            <div class="current-split" data-i18n-prefix="currentSplit" data-i18n-per="perDeveloper" data-i18n-plural="developers">
+                <span class="current-split-text">Current split: {{ "%.2f"|format(role_bonuses_per_person.developer) }}% per developer ({{ role_counts.developer }} developers)</span>
             </div>
             {% endif %}
         </div>
 
         <div class="field-row">
-            <label class="help-wrap">
+            <label class="help-wrap" data-i18n="constBonusLabel">
                 {{ form.constructor_bonus.label.text }}
                 <span class="help-ico" title="Enter the total % budget reserved for all constructors. It will be split equally among constructors." aria-label="Constructor Bonus help">
                     !<span class="tooltip"><b>Total Constructor Bonus</b>: Fixed % pool shared equally by all constructors.</span>
@@ -79,15 +119,14 @@
             </label>
             {{ form.constructor_bonus(value=form.constructor_bonus.data or 8) }}
             {% if role_counts.constructor %}
-            <div class="current-split">
-                Current split: {{ "%.2f"|format(role_bonuses_per_person.constructor) }}% per constructor 
-                ({{ role_counts.constructor }} constructors)
+            <div class="current-split" data-i18n-prefix="currentSplit" data-i18n-per="perConstructor" data-i18n-plural="constructors">
+                <span class="current-split-text">Current split: {{ "%.2f"|format(role_bonuses_per_person.constructor) }}% per constructor ({{ role_counts.constructor }} constructors)</span>
             </div>
             {% endif %}
         </div>
 
         <div class="field-row">
-            <label class="help-wrap">
+            <label class="help-wrap" data-i18n="invBonusLabel">
                 {{ form.investor_bonus.label.text }}
                 <span class="help-ico" title="Enter the total % budget reserved for all investors. It will be split equally among investors." aria-label="Investor Bonus help">
                     !<span class="tooltip"><b>Total Investor Bonus</b>: Fixed % pool shared equally by all investors.</span>
@@ -95,43 +134,42 @@
             </label>
             {{ form.investor_bonus(value=form.investor_bonus.data or 40) }}
             {% if role_counts.investor %}
-            <div class="current-split">
-                Current split: {{ "%.2f"|format(role_bonuses_per_person.investor) }}% per investor 
-                ({{ role_counts.investor }} investors)
+            <div class="current-split" data-i18n-prefix="currentSplit" data-i18n-per="perInvestor" data-i18n-plural="investors">
+                <span class="current-split-text">Current split: {{ "%.2f"|format(role_bonuses_per_person.investor) }}% per investor ({{ role_counts.investor }} investors)</span>
             </div>
             {% endif %}
         </div>
     </div>
 
     <div class="property-section">
-        <h3 style="margin-top: 0;" class="help-wrap">
-            Property Owner Contribution <span class="optional-label">(Optional)</span>
+        <h3 style="margin-top: 0;" class="help-wrap" data-i18n="propertySection">
+            Property Owner Contribution <span class="optional-label" data-i18n="propertyOptional">(Optional)</span>
             <span class="help-ico" id="property-model-help" title="Choose how property contribution is calculated." aria-label="Property model help">
                 !<span class="tooltip" id="property-model-tooltip"><b>Property Model</b>: Choose between negotiated fixed share or value-based contribution.</span>
             </span>
         </h3>
-        <p class="property-info">Fill this section only if there is a property owner contributing land or property to the project.</p>
+            <p id="property-note" class="property-info" data-i18n="propertyNote">Fill this section only if there is a property owner contributing land or property to the project.</p>
         
         <!-- Property Model Toggle -->
         <div class="field-row" style="margin-bottom: 15px; padding: 12px; background: #f8f9fa; border-radius: 4px;">
-            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Property Model:</label>
-            <div style="display: flex; flex-direction: column; gap: 8px;">
-                <label style="display: flex; align-items: center; cursor: pointer;">
-                    <input type="radio" name="property_model" value="A" id="property_model_A" checked style="margin-right: 8px;">
-                    <span><strong>Negotiated % (fixed share)</strong> — Property Equity/Profit Pool (%) enabled; Property Value is informational.</span>
+            <label style="display: block; margin-bottom: 8px; font-weight: 600;" data-i18n="propertyModel">Property Model:</label>
+            <div id="property-model-options" class="property-model-group">
+                <label class="property-model-option">
+                    <input type="radio" name="property_model" value="A" id="property_model_A" checked>
+                    <span class="property-model-text" data-i18n="modelA">Negotiated % (fixed share) — Property Equity/Profit Pool (%) enabled; Property Value is informational.</span>
                 </label>
-                <label style="display: flex; align-items: center; cursor: pointer;">
-                    <input type="radio" name="property_model" value="B" id="property_model_B" style="margin-right: 8px;">
-                    <span><strong>Valued contribution (cash-equivalent)</strong> — Use Property Value in base pool; hide Property Equity/Profit Pool (%).</span>
+                <label class="property-model-option">
+                    <input type="radio" name="property_model" value="B" id="property_model_B">
+                    <span class="property-model-text" data-i18n="modelB">Valued contribution (cash-equivalent) — Use Property Value in base pool; hide Property Equity/Profit Pool (%).</span>
                 </label>
             </div>
-            <div id="property-model-b-note" class="role-info" style="display: none; margin-top: 8px; color: #666; font-style: italic;">
+            <p id="property-model-b-note" class="model-note" style="display: none; margin-top: 8px; color: #666; font-style: italic;" data-i18n="modelBInfo">
                 Property value participates in base pool like cash. No extra property pools.
-            </div>
+            </p>
         </div>
         
         <div class="field-row">
-            <label class="help-wrap">
+            <label class="help-wrap" data-i18n="propValue">
                 {{ form.property_value.label.text }}
                 <span class="help-ico" title="Estimated market value of contributed land/property." aria-label="Property Value help">
                     !<span class="tooltip"><b>Property Value</b>: Estimated market value of contributed land/property. In Model A, this is informational only. In Model B, this participates in the base pool like cash.</span>
@@ -140,28 +178,28 @@
             {{ form.property_value(value=form.property_value.data or '') }}
         </div>
         <div class="field-row">
-            <label>{{ form.property_owner.label.text }}</label>
+            <label data-i18n="propName">{{ form.property_owner.label.text }}</label>
             {{ form.property_owner(value=form.property_owner.data or '') }}
         </div>
         <div class="field-row" id="property-equity-row">
-            <label class="help-wrap">
+            <label class="help-wrap" data-i18n="propEquityPool">
                 {{ form.property_share.label.text }}
                 <span class="help-ico" title="Fixed % equity pool allocated to the property owner (Model A only)." aria-label="Property Equity Pool help">
                     !<span class="tooltip"><b>Property Equity Pool</b>: Fixed % equity pool allocated to the property owner. Only applies in Model A (Negotiated %).</span>
                 </span>
             </label>
             {{ form.property_share(value=form.property_share.data or 10) }}
-            <div class="role-info">Equity share from property contribution (Model A only)</div>
+            <div class="role-info" data-i18n="ttPropEquityPoolDesc">Equity share from property contribution (Model A only)</div>
         </div>
         <div class="field-row" id="property-profit-row">
-            <label class="help-wrap">
+            <label class="help-wrap" data-i18n="propProfitPool">
                 {{ form.property_profit_share.label.text }}
                 <span class="help-ico" title="Additional % profit pool only if Sale Price > Project Cost (Model A only)." aria-label="Property Profit Pool help">
                     !<span class="tooltip"><b>Property Profit Pool</b>: Additional % profit pool only if Sale Price > Project Cost. Only applies in Model A (Negotiated %).</span>
                 </span>
             </label>
             {{ form.property_profit_share(value=form.property_profit_share.data or 5) }}
-            <div class="role-info">Additional share from project profits (Model A only)</div>
+            <div class="role-info" data-i18n="ttPropProfitPoolDesc">Additional share from project profits (Model A only)</div>
         </div>
         
         <!-- Model B specific fields -->
@@ -208,7 +246,7 @@
     </div>
 
     <div class="field-row">
-        <label class="help-wrap">
+        <label class="help-wrap" data-i18n="salePrice">
             {{ form.sale_price.label.text }}
             <span class="help-ico" title="Expected sale revenue for the finished project." aria-label="Project Sale Price help">
                 !<span class="tooltip"><b>Project Sale Price</b>: Expected sale revenue for the finished project.</span>
@@ -222,20 +260,20 @@
             {% for i in range(1, (request.form|length - 4) // 3 + 1) if request.form.get('name' ~ i) %}
             <div class="investor-box" data-investor-index="{{ i }}">
                 <div class="field-row">
-                    <label>Name:</label>
+                    <label data-i18n="nameLabel">Name:</label>
                     <input type="text" name="name{{ i }}" value="{{ request.form.get('name' ~ i) }}" required>
                 </div>
                 <div class="field-row">
-                    <label>Role:</label>
+                    <label data-i18n="roleLabel">Role:</label>
                     <select name="role{{ i }}" required>
-                        <option value="">Select Role</option>
-                        <option value="Developer" {% if request.form.get('role' ~ i) == 'Developer' %}selected{% endif %}>Developer</option>
-                        <option value="Constructor" {% if request.form.get('role' ~ i) == 'Constructor' %}selected{% endif %}>Constructor</option>
-                        <option value="Investor" {% if request.form.get('role' ~ i) == 'Investor' %}selected{% endif %}>Investor</option>
+                        <option value="" data-i18n="selectRole">Select Role</option>
+                        <option value="Developer" {% if request.form.get('role' ~ i) == 'Developer' %}selected{% endif %} data-i18n="roleDeveloper">Developer</option>
+                        <option value="Constructor" {% if request.form.get('role' ~ i) == 'Constructor' %}selected{% endif %} data-i18n="roleConstructor">Constructor</option>
+                        <option value="Investor" {% if request.form.get('role' ~ i) == 'Investor' %}selected{% endif %} data-i18n="roleInvestor">Investor</option>
                     </select>
                 </div>
                 <div id="payment-group{{ i }}" class="field-row {% if request.form.get('role' ~ i) == 'Developer' %}hidden{% endif %}">
-                    <label>Payment (€):{% if request.form.get('role' ~ i) == 'Constructor' %} <span style="font-size:0.85em;color:#666;font-weight:normal;">(Optional)</span>{% endif %}</label>
+                    <label data-i18n="paymentLabel">Payment (€):{% if request.form.get('role' ~ i) == 'Constructor' %} <span style="font-size:0.85em;color:#666;font-weight:normal;" data-i18n="propertyOptional">(Optional)</span>{% endif %}</label>
                     <input type="number" name="paid{{ i }}" value="{{ request.form.get('paid' ~ i, '0') }}" min="0" {% if request.form.get('role' ~ i) == 'Constructor' %}placeholder="Optional"{% endif %}>
                 </div>
             </div>
@@ -243,38 +281,41 @@
         {% else %}
             <div class="investor-box" data-investor-index="1">
                 <div class="field-row">
-                    <label>Name:</label>
+                    <label data-i18n="nameLabel">Name:</label>
                     <input type="text" name="name1" required>
                 </div>
                 <div class="field-row">
-                    <label>Role:</label>
+                    <label data-i18n="roleLabel">Role:</label>
                     <select name="role1" required>
-                        <option value="">Select Role</option>
-                        <option value="Developer">Developer</option>
-                        <option value="Constructor">Constructor</option>
-                        <option value="Investor">Investor</option>
+                        <option value="" data-i18n="selectRole">Select Role</option>
+                        <option value="Developer" data-i18n="roleDeveloper">Developer</option>
+                        <option value="Constructor" data-i18n="roleConstructor">Constructor</option>
+                        <option value="Investor" data-i18n="roleInvestor">Investor</option>
                     </select>
                 </div>
                 <div id="payment-group1" class="field-row">
-                    <label>Payment (€):</label>
+                    <label data-i18n="paymentLabel">Payment (€):</label>
                     <input type="number" name="paid1" min="0" placeholder="Optional for Constructor">
                 </div>
             </div>
         {% endif %}
     </div>
 
-    <button type="button" class="button" id="add-investor-btn">Add Investor</button>
-    <button type="submit" class="button">Calculate</button>
-    <button type="button" class="button" style="background-color: #ff9800;" id="reset-form-btn">New Calculation</button>
+    <button type="button" class="button" id="add-investor-btn" data-i18n="addInvestor">Add Investor</button>
+    <button type="submit" id="calc-btn" class="button" data-i18n="calculate">Calculate</button>
+    <button type="button" id="new-calc-btn" class="button" style="background-color: #ff9800;" data-i18n="newCalc">New Calculation</button>
 </form>
 
 <!-- Live banners container for API updates -->
 <div id="live-banners"></div>
 
-<!-- Results section (populated by server on submit or by JS on live update) -->
+<!-- Results section -->
 <div id="results-section"{% if not results or error %} style="display: none;"{% endif %}>
     {% if results and not error %}
+    <!-- Main results content -->
+    <section id="col-main">
         {% include 'results.html' %}
+    </section>
     {% endif %}
 </div>
     </div>
@@ -283,47 +324,6 @@
     <button type="button" id="calc-show-btn" class="calc-show-btn" style="display: none;" aria-label="Show calculation panel" title="Show calculation panel">
         <span>📊</span>
     </button>
-    
-    <!-- Calculation Panel -->
-    <div id="calculation-panel" class="calculation-panel" style="display: none;">
-        <div class="calc-panel-header">
-            <h3>Share Budget Calculation</h3>
-            <div class="calc-panel-controls">
-                <label class="calc-visibility-toggle" title="Show/hide calculation panel">
-                    <input type="checkbox" id="calc-visibility-checkbox" checked aria-label="Show calculation panel">
-                    <span class="calc-checkmark"><span class="checkmark-text">✓</span></span>
-                </label>
-                <button type="button" class="calc-toggle-btn" id="calc-toggle-btn" aria-label="Minimize/expand calculation panel" title="Minimize/expand calculation panel">
-                    <span class="calc-toggle-icon">−</span>
-                </button>
-            </div>
-        </div>
-        <div id="calc-content">
-            <div class="calc-item">
-                <div class="calc-item-label">Base Pool:</div>
-                <div class="calc-item-value" id="calc-base-pool">0.00%</div>
-                <div class="calc-breakdown" id="calc-base-breakdown"></div>
-            </div>
-            <div class="calc-item">
-                <div class="calc-item-label">Role Pools:</div>
-                <div class="calc-item-value" id="calc-role-pools">0.00%</div>
-                <div class="calc-breakdown" id="calc-role-breakdown"></div>
-            </div>
-            <div class="calc-item" id="calc-property-item" style="display: none;">
-                <div class="calc-item-label">Property Pool:</div>
-                <div class="calc-item-value" id="calc-property-pool">0.00%</div>
-                <div class="calc-breakdown" id="calc-property-breakdown"></div>
-            </div>
-            <div class="calc-item" id="calc-total-item">
-                <div class="calc-item-label">Total:</div>
-                <div class="calc-item-value calc-total" id="calc-total">0.00%</div>
-                <div class="calc-breakdown" id="calc-total-status"></div>
-            </div>
-            <div style="margin-top: 15px; padding: 10px; background: #f5f5f5; border-radius: 4px; font-size: 0.9em; color: #666;">
-                <strong>Note:</strong> Total must equal 100%. Adjust highlighted fields to fix.
-            </div>
-        </div>
-    </div>
 </div>
 
 {% endblock %}

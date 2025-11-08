@@ -166,7 +166,9 @@ calc/
 ├── app/
 │   ├── __init__.py          # Flask app factory
 │   ├── config.py             # Configuration
+│   ├── logger.py             # Logging setup with file rotation
 │   ├── routes.py             # Route handlers
+│   ├── routes_api.py         # JSON API routes
 │   ├── forms.py              # Flask-WTF forms
 │   ├── services/
 │   │   ├── calculator.py    # Core calculation logic
@@ -183,12 +185,36 @@ calc/
 ├── tests/
 │   ├── test_calculator.py
 │   └── test_validators.py
+├── debug/                    # Debug artifacts and legacy code
+│   ├── app_legacy.py         # Old monolithic app (reference only)
+│   └── README.md
+├── logs/                     # Application logs (gitignored)
+│   └── app.log               # Rotating log file
+├── scripts/                  # Build/test/release scripts
 ├── requirements.txt
 ├── Dockerfile
 ├── gunicorn.conf.py
-├── wsgi.py
+├── wsgi.py                   # Production WSGI entry point
+├── run.py                    # Development entry point
 ├── Makefile
 └── README.md
+```
+
+### Logging
+
+The application uses Python's `logging` module with rotating file handlers. Logs are written to `logs/app.log` and automatically rotated when they reach the configured size limit.
+
+- **File logging**: Always enabled, writes to `logs/app.log`
+- **Console logging**: Disabled by default, enable with `LOG_TO_CONSOLE=true`
+- **Log rotation**: Automatic based on `LOG_MAX_SIZE` and `LOG_MAX_FILES`
+
+Example usage:
+```bash
+# Enable console output for development
+LOG_TO_CONSOLE=true LOG_LEVEL=DEBUG python run.py
+
+# Production: logs only to file
+LOG_LEVEL=INFO python run.py
 ```
 
 ## License

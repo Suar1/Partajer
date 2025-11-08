@@ -1,6 +1,6 @@
 """Core calculation logic for investment shares."""
 from decimal import Decimal
-from typing import List, Tuple, Dict, Optional
+from typing import List, Tuple, Dict
 from werkzeug.datastructures import ImmutableMultiDict
 
 from app.services.models import Investor, RoleBonuses, Project, Result
@@ -334,9 +334,8 @@ def compute_distribution(
     for idx, (participant, share_base_pct, share_role_pct, share_property_pct, equity_pct) in enumerate(equity_shares):
         profit_pct = profit_shares[idx]
         
-        # Calculate final values
-        final_value = (equity_pct / Decimal("100")) * project.sale_price
-        profit_value = (profit_pct / Decimal("100")) * project_profit
+        # Calculate final values (stored in Result model via total_share and profit_share)
+        # These are calculated in the template/results rendering, not stored here
         
         results.append(Result(
             name=participant.name,

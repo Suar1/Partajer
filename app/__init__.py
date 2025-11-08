@@ -3,17 +3,24 @@ import logging
 from flask import Flask
 
 from app.config import config
+from app.logger import setup_logger
 
+# Set up application logger
+logger = setup_logger('app')
 
 def create_app(config_name='default'):
     """Create and configure the Flask application."""
     app = Flask(__name__)
     app.config.from_object(config[config_name])
     
-    # Reduce logging to WARNING to avoid logging request bodies
-    log = logging.getLogger('werkzeug')
-    log.setLevel(logging.WARNING)
-    app.logger.setLevel(logging.WARNING)
+    # Configure Werkzeug logger (HTTP requests)
+    werkzeug_log = logging.getLogger('werkzeug')
+    werkzeug_log.setLevel(logging.WARNING)
+    
+    # Use our configured logger for app logging
+    app.logger = logger
+    
+    logger.info(f"Flask app initialized with config: {config_name}")
     
     # Add security headers to prevent caching and data storage
     @app.after_request

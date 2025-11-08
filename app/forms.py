@@ -1,6 +1,6 @@
 """Flask-WTF forms for the investment calculator."""
 from flask_wtf import FlaskForm
-from wtforms import DecimalField, StringField, IntegerField
+from wtforms import DecimalField, StringField
 from wtforms.validators import DataRequired, Optional, NumberRange
 
 

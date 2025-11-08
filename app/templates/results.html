@@ -1,54 +1,54 @@
-<h2>Results</h2>
+<h2 id="results-title" data-i18n="results">Results</h2>
 <div style="margin-bottom: 20px;">
-    <button class="button export-button" type="button" id="export-pdf">Export as PDF</button>
-    <button id="export-csv" class="button export-button" type="button" style="background-color:#00bcd4;">Export as CSV</button>
+    <button class="button export-button" type="button" id="export-pdf" data-i18n="exportPdf">Export as PDF</button>
+    <button id="export-csv" class="button export-button" type="button" style="background-color:#00bcd4;" data-i18n="exportCsv">Export as CSV</button>
 </div>
 <div class="summary-info" style="margin-bottom: 20px;" 
      data-base-pool="{{ "%.2f"|format(meta.base_pool) if meta else '0' }}"
      data-role-pool="{{ "%.2f"|format(meta.role_pool) if meta else '0' }}"
      data-property-pool="{{ "%.2f"|format(meta.property_pool) if meta else '0' }}"
      data-cash-total="{{ "%.2f"|format(meta.cash_total) if meta else '0' }}">
-        <strong>Project Cost:</strong> €{{ "%.2f"|format(meta.project_cost) }}<br>
-        <strong>Project Sale Price:</strong> €{{ "%.2f"|format(meta.sale_price) }}<br>
-        <strong>Total Profit:</strong> €{{ "%.2f"|format(meta.project_profit) }}<br>
-        <strong>Cash Investment (excl. property):</strong> €{{ "%.2f"|format(meta.cash_total) }}<br>
+        <strong data-i18n="projectCostLbl">Project Cost:</strong> €{{ "%.2f"|format(meta.project_cost) }}<br>
+        <strong data-i18n="salePriceLbl">Project Sale Price:</strong> €{{ "%.2f"|format(meta.sale_price) }}<br>
+        <strong data-i18n="totalProfitLbl">Total Profit:</strong> €{{ "%.2f"|format(meta.project_profit) }}<br>
+        <strong data-i18n="cashInvestLbl">Cash Investment (excl. property):</strong> €{{ "%.2f"|format(meta.cash_total) }}<br>
         {% if meta.property_value and meta.property_value > 0 %}
-        <strong>Property Contribution:</strong> €{{ "%.2f"|format(meta.property_value) }}<br>
-        <strong>Property Base Share:</strong> {{ "%.2f"|format(meta.property_base_share) }}%<br>
-        <strong>Property Profit Share:</strong> {{ "%.2f"|format(meta.property_profit_share_effective) }}%<br>
+        <strong data-i18n="propertyContribLbl">Property Contribution:</strong> €{{ "%.2f"|format(meta.property_value) }}<br>
+        <strong data-i18n="propertyEquityLbl">Property Equity Pool:</strong> {{ "%.2f"|format(meta.property_base_share) }}%<br>
+        <strong data-i18n="propertyProfitLbl">Property Profit Pool:</strong> {{ "%.2f"|format(meta.property_profit_share_effective) }}%<br>
         {% endif %}
         <strong>Developer Bonus:</strong> {{ "%.2f"|format(meta.developer_bonus) }}%<br>
         <strong>Constructor Bonus:</strong> {{ "%.2f"|format(meta.constructor_bonus) }}%<br>
         <strong>Investor Bonus:</strong> {{ "%.2f"|format(meta.investor_bonus) }}%
     </div>
     
-    <div class="summary-info" style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 4px;">
-        <h3 style="margin-top: 0;">Share Budget Breakdown</h3>
-        <div><strong>Base Pool:</strong> {{ "%.2f"|format(meta.base_pool) }}%</div>
-        <div><strong>Role Pools:</strong> Dev {{ "%.2f"|format(meta.developer_bonus) }}%, Const {{ "%.2f"|format(meta.constructor_bonus) }}%, Inv {{ "%.2f"|format(meta.investor_bonus) }}% (sum {{ "%.2f"|format(meta.role_pool) }}%)</div>
+    <div id="share-budget-breakdown" class="summary-info" style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 4px;">
+        <h3 style="margin-top: 0;" data-i18n="summary">Share Budget Breakdown</h3>
+        <div><strong data-i18n="basePool">Base Pool:</strong> {{ "%.2f"|format(meta.base_pool) }}%</div>
+        <div><strong data-i18n="rolePools">Role Pools:</strong> <span data-i18n="dev">Dev</span> {{ "%.2f"|format(meta.developer_bonus) }}%, <span data-i18n="const">Const</span> {{ "%.2f"|format(meta.constructor_bonus) }}%, <span data-i18n="inv">Inv</span> {{ "%.2f"|format(meta.investor_bonus) }}% (<span data-i18n="sum">sum</span> {{ "%.2f"|format(meta.role_pool) }}%)</div>
         {% if meta.property_pool > 0 %}
-        <div><strong>Property Pool:</strong> Base {{ "%.2f"|format(meta.property_base_share) }}% + Profit {{ "%.2f"|format(meta.property_profit_share_effective) }}% = {{ "%.2f"|format(meta.property_pool) }}%</div>
+        <div><strong data-i18n="propertyPool">Property Pool:</strong> Base {{ "%.2f"|format(meta.property_base_share) }}% + Profit {{ "%.2f"|format(meta.property_profit_share_effective) }}% = {{ "%.2f"|format(meta.property_pool) }}%</div>
         {% endif %}
-        <div style="margin-top: 10px; font-weight: bold;"><strong>Total:</strong> {{ "%.2f"|format(meta.total_pct_sum) }}%</div>
+        <div style="margin-top: 10px; font-weight: bold;"><strong data-i18n="total">Total:</strong> {{ "%.2f"|format(meta.total_pct_sum) }}%</div>
     </div>
     
     <table>
         <tr>
-            <th>Name</th>
-            <th>Role</th>
-            <th>Payment (€)</th>
-            <th>Base Share (%)</th>
-            <th>Role Bonus (%)</th>
-            <th>Property Share (%)</th>
-            <th>Equity Share (%)</th>
-            <th>Profit Share (%)</th>
-            <th>Final Share Value (€)</th>
-            <th>Profit Value (€)</th>
+            <th data-i18n="thName">Name</th>
+            <th data-i18n="thRole">Role</th>
+            <th data-i18n="thPayment">Payment (€)</th>
+            <th data-i18n="thBaseShare">Base Share (%)</th>
+            <th data-i18n="thRoleBonus">Role Bonus (%)</th>
+            <th data-i18n="thPropShare">Property Share (%)</th>
+            <th data-i18n="thEquityShare">Equity Share (%)</th>
+            <th data-i18n="thProfitShare">Profit Share (%)</th>
+            <th data-i18n="thFinalValue">Final Share Value (€)</th>
+            <th data-i18n="thProfitValue">Profit Value (€)</th>
         </tr>
         {% for result in results %}
         <tr>
             <td>{{ result.name }}</td>
-            <td>{{ result.role }}</td>
+            <td class="role-cell" data-role="{{ result.role }}">{{ result.role }}</td>
             <td>{{ "%.2f"|format(result.payment) }}</td>
             <td>{{ "%.2f"|format(result.share) }}</td>
             <td>{{ "%.2f"|format(result.bonus) }}</td>
@@ -60,7 +60,7 @@
         </tr>
         {% endfor %}
         <tr style="font-weight: bold; background-color: #f8f9fa;">
-            <td colspan="2">Totals</td>
+            <td colspan="2" data-i18n="totalsRow">Totals</td>
             <td>{{ "%.2f"|format(meta.cash_total) }}</td>
             <td>{{ "%.2f"|format(meta.total_base_shares) }}</td>
             <td>{{ "%.2f"|format(meta.total_role_bonuses) }}</td>

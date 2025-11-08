@@ -3,6 +3,65 @@ body {
     margin: 40px; 
     background-color: #f5f5f5;
 }
+
+/* RTL Support for Arabic */
+html[dir="rtl"] {
+    direction: rtl;
+    text-align: right;
+}
+
+html[dir="rtl"] body {
+    font-family: 'Cairo', 'Arial', sans-serif;
+}
+
+html[dir="rtl"] label {
+    text-align: right;
+}
+
+html[dir="rtl"] input, 
+html[dir="rtl"] select,
+html[dir="rtl"] textarea {
+    text-align: right;
+    direction: rtl;
+}
+
+html[dir="rtl"] table th,
+html[dir="rtl"] table td {
+    text-align: right;
+}
+
+html[dir="rtl"] .field-row label {
+    display: inline-block;
+    width: auto;
+    min-width: 180px;
+    margin-left: 8px;
+    margin-right: 0;
+}
+
+html[dir="rtl"] .button {
+    float: left;
+}
+
+html[dir="rtl"] #language-select {
+    direction: ltr; /* Keep language selector LTR for readability */
+    font-family: 'Cairo', sans-serif;
+}
+
+html[dir="rtl"] #lang-switch {
+    right: auto;
+    left: 20px;
+}
+
+html[dir="rtl"] .help-ico {
+    margin-left: 0;
+    margin-right: 6px;
+}
+
+html[dir="rtl"] .tooltip {
+    right: 50%;
+    left: auto;
+    transform: translate(50%, -8px);
+}
 h1 { margin-bottom: 30px; }
 .summary-info {
     background-color: #e9ecef;
@@ -174,18 +233,119 @@ th {
 #app-footer a:hover {
     text-decoration: underline;
 }
-.calculation-panel {
-    position: fixed;
+
+/* Property Model Options - Stacked Vertically */
+/* Container: stacked options */
+.property-model-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin: 0.5rem 0 0.5rem 0;
+}
+
+/* Each option: radio + text in a row */
+.property-model-option {
+    display: flex !important;
+    align-items: center;
+    gap: 0.6rem;
+    line-height: 1.5;
+    cursor: pointer;
+}
+
+.property-model-option input[type="radio"] {
+    flex-shrink: 0;
+}
+
+/* Text block defaults */
+.property-model-text {
+    /* allow a single line on wide screens (see media query below) */
+    white-space: normal;
+}
+
+/* ===== RTL placement (Arabic) ===== */
+html[dir="rtl"] .property-model-option {
+    flex-direction: row-reverse;       /* radio on the right, text on the left */
+    justify-content: flex-end;         /* push content to the right edge */
+    text-align: right;
+}
+
+html[dir="rtl"] .property-model-option input {
+    margin-left: 0.4rem;               /* breathing room between radio and text */
+    margin-right: 0;                   /* neutralize any LTR margin */
+}
+
+/* ===== LTR behavior (English) ===== */
+/* On sufficiently wide viewports, avoid wrapping if the monitor allows it */
+@media (min-width: 900px) {
+    html[dir="ltr"] .property-model-option {
+        flex-wrap: nowrap;
+    }
+    html[dir="ltr"] .property-model-text {
+        white-space: nowrap;             /* stay on one line when there is room */
+    }
+}
+
+/* On smaller screens, allow natural wrapping */
+@media (max-width: 899.98px) {
+    .property-model-option { 
+        flex-wrap: wrap; 
+    }
+    .property-model-text { 
+        white-space: normal; 
+    }
+}
+
+/* Ensure this block isn't constrained by a narrow column width */
+.property-model-group, .property-model-option, .property-model-text {
+    max-width: 100%;
+}
+
+.model-note {
+    margin-top: 0.5rem;
+    font-size: 0.9em;
+    color: #666;
+    font-style: italic;
+}
+/* Floating budget panel on the side - small popup */
+.calc-panel-floating {
+    position: fixed !important;
     top: 20px;
     right: 20px;
-    width: 320px;
+    z-index: 1000;
+    width: 320px !important;
+    max-width: 320px !important;
+    min-width: 280px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background: #fff;
+    border-radius: 8px;
+    padding: 16px 20px;
+    border: 1px solid #e5e7eb;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+}
+
+/* RTL: position on left side */
+html[dir="rtl"] .calc-panel-floating {
+    right: auto;
+    left: 20px;
+}
+
+/* Main results content */
+#col-main {
+    margin-top: 0;
+}
+
+.calculation-panel {
     background: white;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    z-index: 1000;
-    max-height: 90vh;
-    overflow-y: auto;
+}
+
+/* Override width for floating panel */
+.calculation-panel.calc-panel-floating {
+    width: 320px !important;
+    max-width: 320px !important;
 }
 .calc-panel-header {
     display: flex;

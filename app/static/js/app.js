@@ -45,7 +45,7 @@ function togglePaymentField(boxElement) {
 }
 
 function addInvestor() {
-    console.log('addInvestor called');
+    // Add investor function called
     const investorsDiv = document.getElementById('investors');
     if (!investorsDiv) {
         console.error('Investors container not found');
@@ -56,7 +56,7 @@ function addInvestor() {
     // Recalculate investor count from existing boxes
     const existingBoxes = document.querySelectorAll('.investor-box');
     investorCount = existingBoxes.length;
-    console.log('Current investor count:', investorCount);
+        // Current investor count tracked
     
     if (investorCount >= maxInvestors) {
         alert('Maximum number of investors reached!');
@@ -64,7 +64,7 @@ function addInvestor() {
     }
 
     investorCount++;
-    console.log('New investor count:', investorCount);
+        // Investor count incremented
     const newInvestorBox = document.createElement('div');
     newInvestorBox.className = 'investor-box';
     newInvestorBox.setAttribute('data-investor-index', investorCount);
@@ -76,10 +76,10 @@ function addInvestor() {
         <div class="field-row">
             <label>Role:</label>
             <select name="role${investorCount}" required>
-                <option value="">Select Role</option>
-                <option value="Developer">Developer</option>
-                <option value="Constructor">Constructor</option>
-                <option value="Investor">Investor</option>
+                <option value="" data-i18n="selectRole">Select Role</option>
+                <option value="Developer" data-i18n="roleDeveloper">Developer</option>
+                <option value="Constructor" data-i18n="roleConstructor">Constructor</option>
+                <option value="Investor" data-i18n="roleInvestor">Investor</option>
             </select>
         </div>
         <div id="payment-group${investorCount}" class="field-row">
@@ -89,6 +89,11 @@ function addInvestor() {
     `;
     
     investorsDiv.appendChild(newInvestorBox);
+    
+    // Apply translations to newly added elements
+    if (typeof applyTranslations === 'function') {
+        applyTranslations(currentLang);
+    }
     
     // Add event listener for role change
     const roleSelect = newInvestorBox.querySelector(`select[name="role${investorCount}"]`);
@@ -270,10 +275,10 @@ function resetForm() {
             <div class="field-row">
                 <label>Role:</label>
                 <select name="role1" required>
-                    <option value="">Select Role</option>
-                    <option value="Developer">Developer</option>
-                    <option value="Constructor">Constructor</option>
-                    <option value="Investor">Investor</option>
+                    <option value="" data-i18n="selectRole">Select Role</option>
+                    <option value="Developer" data-i18n="roleDeveloper">Developer</option>
+                    <option value="Constructor" data-i18n="roleConstructor">Constructor</option>
+                    <option value="Investor" data-i18n="roleInvestor">Investor</option>
                 </select>
             </div>
             <div id="payment-group1" class="field-row">
@@ -285,6 +290,11 @@ function resetForm() {
     
     // Reset investor count
     investorCount = 1;
+    
+    // Apply translations to reset form
+    if (typeof applyTranslations === 'function') {
+        applyTranslations(currentLang);
+    }
     
     // Re-initialize event listeners
     document.querySelectorAll('.investor-box').forEach((box) => {
@@ -317,12 +327,17 @@ function exportToPDF() {
     const clonedContent = content.cloneNode(true);
     const date = new Date().toLocaleString();
     
+    // Get current language
+    const lang = typeof currentLang !== 'undefined' ? currentLang : 'en';
+    const langName = lang === 'ar' ? 'العربية' : 'English';
+    const dict = (window.i18n && window.i18n[lang]) || {};
+    
     // Add header
     const header = document.createElement('header');
     header.style.cssText = 'margin-bottom:10px;border-bottom:1px solid #ddd;padding-bottom:6px;';
     header.innerHTML = `
-        <h2 style="margin:0;">Investment Share Calculator — Results</h2>
-        <div style="font-size:12px;color:#555;">Generated: ${date}</div>
+        <h2 style="margin:0;">${dict.title || 'Investment Share Calculator'} — ${dict.results || 'Results'}</h2>
+        <div style="font-size:12px;color:#555;">${lang === 'ar' ? 'تم الإنشاء:' : 'Generated:'} ${date} | ${lang === 'ar' ? 'اللغة:' : 'Language:'} ${langName}</div>
     `;
     clonedContent.insertBefore(header, clonedContent.firstChild);
     
@@ -501,11 +516,17 @@ function exportTableToCSV() {
         cash = meta.dataset.cashTotal || '';
     }
     
+    // Get current language
+    const lang = typeof currentLang !== 'undefined' ? currentLang : 'en';
+    const langName = lang === 'ar' ? 'العربية' : 'English';
+    const dict = (window.i18n && window.i18n[lang]) || {};
+    
     const metaLines = [
-        `# Investment Share Calculator`,
-        `# Generated: ${now}`,
-        `# Pools: base=${base}%, role=${role}%, property=${prop}%`,
-        cash ? `# Cash Investment (excl. property): €${cash}` : `#`
+        `# ${dict.title || 'Investment Share Calculator'}`,
+        `# ${lang === 'ar' ? 'تم الإنشاء:' : 'Generated:'} ${now}`,
+        `# ${lang === 'ar' ? 'اللغة:' : 'Language:'} ${langName}`,
+        `# ${lang === 'ar' ? 'المجموعات:' : 'Pools:'} base=${base}%, role=${role}%, property=${prop}%`,
+        cash ? `# ${dict.cashInvestLbl || 'Cash Investment (excl. property):'}: €${cash}` : `#`
     ].join('\r\n');
     
     const csv = metaLines + '\r\n' + csvBody;
@@ -839,12 +860,10 @@ document.addEventListener('DOMContentLoaded', function() {
     if (addInvestorBtn) {
         addInvestorBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            console.log('Add Investor button clicked');
             addInvestor();
         });
-        console.log('Add Investor button wired up');
     } else {
-        console.error('Add Investor button not found!');
+        // Add Investor button not found (may not be on page)
     }
     
     // Wire up Reset Form button
@@ -1064,9 +1083,15 @@ function updateCalculationPanel() {
     
     // Role pool breakdown
     const roleBreakdown = [];
-    if (devBonus > 0) roleBreakdown.push(`Dev ${devBonus.toFixed(2)}%`);
-    if (constBonus > 0) roleBreakdown.push(`Const ${constBonus.toFixed(2)}%`);
-    if (invBonus > 0) roleBreakdown.push(`Inv ${invBonus.toFixed(2)}%`);
+    // Translate role abbreviations for breakdown
+    const dict = (window.i18n && window.i18n[currentLang]) || {};
+    const devLabel = dict.dev || 'Dev';
+    const constLabel = dict.const || 'Const';
+    const invLabel = dict.inv || 'Inv';
+    
+    if (devBonus > 0) roleBreakdown.push(`${devLabel} ${devBonus.toFixed(2)}%`);
+    if (constBonus > 0) roleBreakdown.push(`${constLabel} ${constBonus.toFixed(2)}%`);
+    if (invBonus > 0) roleBreakdown.push(`${invLabel} ${invBonus.toFixed(2)}%`);
     
     // Property pool breakdown (Model A only)
     let propertyBreakdown = [];
@@ -1163,13 +1188,15 @@ function updateCalculationPanel() {
     } else if (basePool >= 0 && basePool <= 5) {
         if (totalItem) totalItem.className = 'calc-item warning';
         if (statusDiv) {
-            statusDiv.textContent = `Base pool: ${basePool.toFixed(2)}% (close to limit)`;
+            const dict = (window.i18n && window.i18n[currentLang]) || {};
+            statusDiv.textContent = `${dict.basePool || 'Base Pool:'} ${basePool.toFixed(2)}% (${dict.closeToLimit || 'close to limit'})`;
             statusDiv.style.color = '#ff9800';
         }
     } else {
         if (totalItem) totalItem.className = 'calc-item success';
         if (statusDiv) {
-            statusDiv.textContent = `Base pool: ${basePool.toFixed(2)}%`;
+            const dict = (window.i18n && window.i18n[currentLang]) || {};
+            statusDiv.textContent = `${dict.basePool || 'Base Pool:'} ${basePool.toFixed(2)}%`;
             statusDiv.style.color = '#4caf50';
         }
     }
@@ -1320,12 +1347,21 @@ function renderResultsJSON(data) {
     // Show results section
     section.style.display = 'block';
     
+    // Get current language
+    const lang = typeof currentLang !== 'undefined' ? currentLang : 'en';
+    const dict = (window.i18n && window.i18n[lang]) || {};
+    
     // Add heading if it doesn't exist
     let heading = section.querySelector('h2');
     if (!heading) {
         heading = document.createElement('h2');
-        heading.textContent = 'Results';
+        heading.id = 'results-title';
+        heading.setAttribute('data-i18n', 'results');
+        heading.textContent = dict.results || 'Results';
         section.insertBefore(heading, section.firstChild);
+    } else {
+        heading.setAttribute('data-i18n', 'results');
+        heading.textContent = dict.results || 'Results';
     }
     
     // Create summary-info if it doesn't exist
@@ -1337,71 +1373,212 @@ function renderResultsJSON(data) {
         section.insertBefore(summaryInfo, heading.nextSibling);
     }
     
-    // Update summary info content
+    // Update summary info content with data-i18n attributes
     const totalsData = data.totals || {};
     const poolsData = data.pools || {};
     summaryInfo.innerHTML = `
-        <strong>Project Cost:</strong> €${Number(totalsData.project_cost || 0).toFixed(2)}<br>
-        <strong>Project Sale Price:</strong> €${Number(totalsData.sale_price || 0).toFixed(2)}<br>
-        <strong>Total Profit:</strong> €${Number(totalsData.profit || 0).toFixed(2)}<br>
-        <strong>Cash Investment (excl. property):</strong> €${Number(totalsData.cash_total || 0).toFixed(2)}<br>
-        <strong>Developer Bonus:</strong> ${Number(poolsData.dev || 0).toFixed(2)}%<br>
-        <strong>Constructor Bonus:</strong> ${Number(poolsData.const || 0).toFixed(2)}%<br>
-        <strong>Investor Bonus:</strong> ${Number(poolsData.inv || 0).toFixed(2)}%
+        <strong data-i18n="projectCostLbl">${dict.projectCostLbl || 'Project Cost:'}</strong> €${Number(totalsData.project_cost || 0).toFixed(2)}<br>
+        <strong data-i18n="salePriceLbl">${dict.salePriceLbl || 'Project Sale Price:'}</strong> €${Number(totalsData.sale_price || 0).toFixed(2)}<br>
+        <strong data-i18n="totalProfitLbl">${dict.totalProfitLbl || 'Total Profit:'}</strong> €${Number(totalsData.profit || 0).toFixed(2)}<br>
+        <strong data-i18n="cashInvestLbl">${dict.cashInvestLbl || 'Cash Investment (excl. property):'}</strong> €${Number(totalsData.cash_total || 0).toFixed(2)}<br>
+        <strong data-i18n="devBonusLbl">${dict.devBonusLbl || 'Developer Bonus:'}</strong> ${Number(poolsData.dev || 0).toFixed(2)}%<br>
+        <strong data-i18n="constBonusLbl">${dict.constBonusLbl || 'Constructor Bonus:'}</strong> ${Number(poolsData.const || 0).toFixed(2)}%<br>
+        <strong data-i18n="invBonusLbl">${dict.invBonusLbl || 'Investor Bonus:'}</strong> ${Number(poolsData.inv || 0).toFixed(2)}%
     `;
     
-    // Update data attributes for budget bar and guards
-    summaryInfo.dataset.basePool = (poolsData.base_pool ?? '0');
-    summaryInfo.dataset.rolePool = (poolsData.role_pool ?? '0');
-    summaryInfo.dataset.propertyPool = (poolsData.property_pool ?? '0');
-    summaryInfo.dataset.cashTotal = (totalsData.cash_total ?? '0');
+    // Apply translations to newly created elements
+    if (typeof applyTranslations === 'function') {
+        applyTranslations(lang);
+    }
     
-    let table = section.querySelector('table');
+    // Update data attributes for budget bar and guards
+    if (summaryInfo) {
+        summaryInfo.dataset.basePool = (poolsData.base_pool ?? '0');
+        summaryInfo.dataset.rolePool = (poolsData.role_pool ?? '0');
+        summaryInfo.dataset.propertyPool = (poolsData.property_pool ?? '0');
+        summaryInfo.dataset.cashTotal = (totalsData.cash_total ?? '0');
+    }
+    
+    // Calculation panel should already exist at the top of the page (not in results section)
+    // Just ensure it exists in the document
+    let calcPanel = document.getElementById('calculation-panel');
+    if (!calcPanel) {
+        // If it doesn't exist, create it at the top of the page
+        const pageTitle = document.getElementById('page-title');
+        if (pageTitle && pageTitle.nextElementSibling) {
+            calcPanel = document.createElement('div');
+            calcPanel.id = 'calculation-panel';
+            calcPanel.className = 'calculation-panel calc-panel-floating';
+            calcPanel.innerHTML = `
+                <div class="calc-panel-header">
+                    <h3 data-i18n="summary">Share Budget Breakdown</h3>
+                    <div class="calc-panel-controls">
+                        <label class="calc-visibility-toggle" title="Show/hide calculation panel">
+                            <input type="checkbox" id="calc-visibility-checkbox" checked aria-label="Show calculation panel">
+                            <span class="calc-checkmark"><span class="checkmark-text">✓</span></span>
+                        </label>
+                        <button type="button" class="calc-toggle-btn" id="calc-toggle-btn" aria-label="Minimize/expand calculation panel" title="Minimize/expand calculation panel">
+                            <span class="calc-toggle-icon">−</span>
+                        </button>
+                    </div>
+                </div>
+                <div id="calc-content">
+                    <div class="calc-item">
+                        <div class="calc-item-label" data-i18n="basePool">Base Pool:</div>
+                        <div class="calc-item-value" id="calc-base-pool">0.00%</div>
+                        <div class="calc-breakdown" id="calc-base-breakdown"></div>
+                    </div>
+                    <div class="calc-item">
+                        <div class="calc-item-label" data-i18n="rolePools">Role Pools:</div>
+                        <div class="calc-item-value" id="calc-role-pools">0.00%</div>
+                        <div class="calc-breakdown" id="calc-role-breakdown"></div>
+                    </div>
+                    <div class="calc-item" id="calc-property-item" style="display: none;">
+                        <div class="calc-item-label" data-i18n="propertyPool">Property Pool:</div>
+                        <div class="calc-item-value" id="calc-property-pool">0.00%</div>
+                        <div class="calc-breakdown" id="calc-property-breakdown"></div>
+                    </div>
+                    <div class="calc-item" id="calc-total-item">
+                        <div class="calc-item-label" data-i18n="total">Total:</div>
+                        <div class="calc-item-value calc-total" id="calc-total">0.00%</div>
+                        <div class="calc-breakdown" id="calc-total-status"></div>
+                    </div>
+                    <div style="margin-top: 15px; padding: 10px; background: #f5f5f5; border-radius: 4px; font-size: 0.9em; color: #666;">
+                        <strong data-i18n="warnOverBudget">Note: Total must equal 100%. Adjust highlighted fields to fix.</strong>
+                    </div>
+                </div>
+            `;
+            pageTitle.parentNode.insertBefore(calcPanel, pageTitle.nextSibling);
+        }
+    }
+    
+    // Ensure heading and summary are in col-main or section
+    let colMain = section.querySelector('#col-main');
+    if (!colMain) {
+        colMain = document.createElement('section');
+        colMain.id = 'col-main';
+        // Move all non-panel content to col-main
+        const existingContent = Array.from(section.children);
+        existingContent.forEach(child => {
+            if (child.id !== 'calculation-panel') {
+                colMain.appendChild(child);
+            }
+        });
+        section.appendChild(colMain);
+    }
+    
+    if (heading && colMain && !colMain.contains(heading)) {
+        colMain.insertBefore(heading, colMain.firstChild);
+    }
+    if (summaryInfo && colMain && !colMain.contains(summaryInfo)) {
+        if (heading) {
+            colMain.insertBefore(summaryInfo, heading.nextSibling);
+        } else {
+            colMain.appendChild(summaryInfo);
+        }
+    }
+    
+    // Find or create table in col-main
+    const tableContainer = colMain || section;
+    let table = tableContainer.querySelector('table');
     if (!table) {
         // Create table if it doesn't exist
         table = document.createElement('table');
-        section.appendChild(table);
+        tableContainer.appendChild(table);
     }
     
-    // Create/update header
+    // Create/update header with data-i18n attributes
     let thead = table.querySelector('thead');
     if (!thead) {
         thead = document.createElement('thead');
         thead.innerHTML = `
             <tr>
-                <th>Name</th>
-                <th>Role</th>
-                <th>Payment (€)</th>
-                <th>Base Share (%)</th>
-                <th>Role Bonus (%)</th>
-                <th>Property Share (%)</th>
-                <th>Total Share (%)</th>
-                <th>Final Share Value (€)</th>
-                <th>Profit Value (€)</th>
+                <th data-i18n="thName">${dict.thName || 'Name'}</th>
+                <th data-i18n="thRole">${dict.thRole || 'Role'}</th>
+                <th data-i18n="thPayment">${dict.thPayment || 'Payment (€)'}</th>
+                <th data-i18n="thBaseShare">${dict.thBaseShare || 'Base Share (%)'}</th>
+                <th data-i18n="thRoleBonus">${dict.thRoleBonus || 'Role Bonus (%)'}</th>
+                <th data-i18n="thPropShare">${dict.thPropShare || 'Property Share (%)'}</th>
+                <th data-i18n="thEquityShare">${dict.thEquityShare || 'Equity Share (%)'}</th>
+                <th data-i18n="thProfitShare">${dict.thProfitShare || 'Profit Share (%)'}</th>
+                <th data-i18n="thFinalValue">${dict.thFinalValue || 'Final Share Value (€)'}</th>
+                <th data-i18n="thProfitValue">${dict.thProfitValue || 'Profit Value (€)'}</th>
             </tr>
         `;
         table.appendChild(thead);
+    } else {
+        // Update existing headers with data-i18n
+        const headers = thead.querySelectorAll('th');
+        if (headers.length >= 10) {
+            const keys = ['thName', 'thRole', 'thPayment', 'thBaseShare', 'thRoleBonus', 'thPropShare', 'thEquityShare', 'thProfitShare', 'thFinalValue', 'thProfitValue'];
+            headers.forEach((h, i) => {
+                h.setAttribute('data-i18n', keys[i]);
+                h.textContent = dict[keys[i]] || h.textContent;
+            });
+        }
+    }
+    
+    // Apply translations to newly created elements
+    if (typeof applyTranslations === 'function') {
+        applyTranslations(lang);
     }
     
     // Create tbody
     const tbody = document.createElement('tbody');
+    
+    // Helper functions for number formatting (use Intl if available)
+    const fmtCurrency = (v) => {
+        try {
+            return new Intl.NumberFormat(lang === 'ar' ? 'ar' : undefined, {
+                style: 'currency',
+                currency: 'EUR',
+                maximumFractionDigits: 2
+            }).format(Number(v || 0));
+        } catch {
+            return '€' + Number(v || 0).toFixed(2);
+        }
+    };
+    
+    const fmtPercent = (v) => {
+        try {
+            return new Intl.NumberFormat(lang === 'ar' ? 'ar' : undefined, {
+                style: 'percent',
+                maximumFractionDigits: 2
+            }).format(Number(v || 0) / 100);
+        } catch {
+            return Number(v || 0).toFixed(2) + '%';
+        }
+    };
+    
+    const fmtNumber = (v) => {
+        try {
+            return new Intl.NumberFormat(lang === 'ar' ? 'ar' : undefined, {
+                maximumFractionDigits: 2
+            }).format(Number(v || 0));
+        } catch {
+            return Number(v || 0).toFixed(2);
+        }
+    };
     
     // Fill rows
     (data.results || []).forEach(r => {
         const tr = document.createElement('tr');
         const equityPct = Number(r.total_equity_pct || r.total_share_pct || 0);
         const profitPct = Number(r.total_profit_pct || r.total_share_pct || 0);
+        // Translate role name
+        const translatedRole = typeof translateRole === 'function' ? translateRole(r.role) : r.role;
+        
         tr.innerHTML = `
             <td>${r.name}</td>
-            <td>${r.role}</td>
-            <td>${Number(r.payment).toFixed(2)}</td>
-            <td>${Number(r.share_base_pct || 0).toFixed(2)}</td>
-            <td>${Number(r.share_role_pct || 0).toFixed(2)}</td>
-            <td>${Number(r.share_property_pct || 0).toFixed(2)}</td>
-            <td>${equityPct.toFixed(2)}</td>
-            <td>${profitPct.toFixed(2)}</td>
-            <td>${Number(r.final_value || 0).toFixed(2)}</td>
-            <td>${Number(r.profit_value || 0).toFixed(2)}</td>
+            <td class="role-cell" data-role="${r.role}">${translatedRole}</td>
+            <td>${fmtCurrency(r.payment)}</td>
+            <td>${fmtPercent(r.share_base_pct || 0)}</td>
+            <td>${fmtPercent(r.share_role_pct || 0)}</td>
+            <td>${fmtPercent(r.share_property_pct || 0)}</td>
+            <td>${fmtPercent(equityPct)}</td>
+            <td>${fmtPercent(profitPct)}</td>
+            <td>${fmtCurrency(r.final_value || 0)}</td>
+            <td>${fmtCurrency(r.profit_value || 0)}</td>
         `;
         tbody.appendChild(tr);
     });
@@ -1413,15 +1590,15 @@ function renderResultsJSON(data) {
     const totalEquityPct = Number(totalsData.total_pct_sum_equity || totalsData.total_pct_sum || 0);
     const totalProfitPct = Number(totalsData.total_pct_sum_profit || totalsData.total_pct_sum || 0);
     trTot.innerHTML = `
-        <td colspan="2">Totals</td>
-        <td>${Number(totalsData.cash_total || 0).toFixed(2)}</td>
-        <td>${Number(poolsData.base_pool || 0).toFixed(2)}</td>
-        <td>${Number(poolsData.role_pool || 0).toFixed(2)}</td>
-        <td>${Number(poolsData.property_pool || 0).toFixed(2)}</td>
-        <td>${totalEquityPct.toFixed(2)}</td>
-        <td>${totalProfitPct.toFixed(2)}</td>
-        <td>${Number(totalsData.sale_price || 0).toFixed(2)}</td>
-        <td>${Number(totalsData.profit || 0).toFixed(2)}</td>
+        <td colspan="2" data-i18n="totalsRow">${dict.totalsRow || 'Totals'}</td>
+        <td>${fmtCurrency(totalsData.cash_total || 0)}</td>
+        <td>${fmtPercent(poolsData.base_pool || 0)}</td>
+        <td>${fmtPercent(poolsData.role_pool || 0)}</td>
+        <td>${fmtPercent(poolsData.property_pool || 0)}</td>
+        <td>${fmtPercent(totalEquityPct)}</td>
+        <td>${fmtPercent(totalProfitPct)}</td>
+        <td>${fmtCurrency(totalsData.sale_price || 0)}</td>
+        <td>${fmtCurrency(totalsData.profit || 0)}</td>
     `;
     tbody.appendChild(trTot);
     
@@ -1480,9 +1657,14 @@ function renderResultsJSON(data) {
         buttonsDiv.className = 'export-buttons-container';
         buttonsDiv.style.cssText = 'margin-bottom: 20px;';
         buttonsDiv.innerHTML = `
-            <button class="button export-button" type="button" id="export-pdf">Export as PDF</button>
-            <button id="export-csv" class="button export-button" type="button" style="background-color:#00bcd4;">Export as CSV</button>
+            <button class="button export-button" type="button" id="export-pdf" data-i18n="exportPdf">${dict.exportPdf || 'Export as PDF'}</button>
+            <button id="export-csv" class="button export-button" type="button" style="background-color:#00bcd4;" data-i18n="exportCsv">${dict.exportCsv || 'Export as CSV'}</button>
         `;
+        
+        // Apply translations to newly created buttons
+        if (typeof applyTranslations === 'function') {
+            applyTranslations(lang);
+        }
         section.insertBefore(buttonsDiv, section.firstChild);
         
         // Wire up export buttons
@@ -1499,6 +1681,14 @@ function renderResultsJSON(data) {
     // Refresh budget bar & gates
     updateBudgetBar();
     gateCalculate();
+    
+    // Update calculation panel
+    updateCalculationPanel();
+    
+    // Apply translations to all newly created elements
+    if (typeof applyTranslations === 'function') {
+        applyTranslations(lang);
+    }
 }
 
 // Live calculation via API

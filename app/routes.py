@@ -1,4 +1,5 @@
 """Routes for the investment calculator."""
+import logging
 from flask import Blueprint, render_template, request
 from decimal import Decimal
 
@@ -7,6 +8,7 @@ from app.services.calculator import parse_investors, compute_distribution, compu
 from app.services.models import RoleBonuses, Project
 
 bp = Blueprint('main', __name__)
+logger = logging.getLogger('app')
 
 
 @bp.route("/", methods=["GET", "POST"])
@@ -108,8 +110,10 @@ def index():
                     )
                     
             except ValueError as e:
+                logger.warning(f"Validation error: {str(e)}")
                 errors.append(str(e))
             except Exception as e:
+                logger.error(f"Unexpected error in calculation: {str(e)}", exc_info=True)
                 errors.append(f"An unexpected error occurred: {str(e)}")
         else:
             errors.append("Please correct the form errors.")

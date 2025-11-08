@@ -1,7 +1,6 @@
 """Validation functions for investment calculator."""
 from decimal import Decimal
 from typing import List, Tuple, Optional
-from werkzeug.exceptions import BadRequest
 
 from app.services.models import Investor, RoleBonuses, Project
 

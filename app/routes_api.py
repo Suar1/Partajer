@@ -1,11 +1,13 @@
 """JSON API routes for live calculation."""
+import logging
 from flask import Blueprint, request, jsonify
 from decimal import Decimal
 
-from app.services.calculator import compute_distribution, parse_investors
+from app.services.calculator import compute_distribution
 from app.services.models import RoleBonuses, Project, Investor
 
 api = Blueprint('api', __name__)
+logger = logging.getLogger('app')
 
 
 def D(x):
@@ -139,5 +141,6 @@ def api_calculate():
         return jsonify(payload), 200
         
     except Exception as e:
+        logger.error(f"API calculation failed: {str(e)}", exc_info=True)
         return jsonify({"error": "calculation_failed", "detail": str(e)}), 400
 
