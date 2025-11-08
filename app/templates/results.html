@@ -1,0 +1,82 @@
+<h2>Results</h2>
+<div style="margin-bottom: 20px;">
+    <button class="button export-button" type="button" id="export-pdf">Export as PDF</button>
+    <button id="export-csv" class="button export-button" type="button" style="background-color:#00bcd4;">Export as CSV</button>
+</div>
+<div class="summary-info" style="margin-bottom: 20px;" 
+     data-base-pool="{{ "%.2f"|format(meta.base_pool) if meta else '0' }}"
+     data-role-pool="{{ "%.2f"|format(meta.role_pool) if meta else '0' }}"
+     data-property-pool="{{ "%.2f"|format(meta.property_pool) if meta else '0' }}"
+     data-cash-total="{{ "%.2f"|format(meta.cash_total) if meta else '0' }}">
+        <strong>Project Cost:</strong> €{{ "%.2f"|format(meta.project_cost) }}<br>
+        <strong>Project Sale Price:</strong> €{{ "%.2f"|format(meta.sale_price) }}<br>
+        <strong>Total Profit:</strong> €{{ "%.2f"|format(meta.project_profit) }}<br>
+        <strong>Cash Investment (excl. property):</strong> €{{ "%.2f"|format(meta.cash_total) }}<br>
+        {% if meta.property_value and meta.property_value > 0 %}
+        <strong>Property Contribution:</strong> €{{ "%.2f"|format(meta.property_value) }}<br>
+        <strong>Property Base Share:</strong> {{ "%.2f"|format(meta.property_base_share) }}%<br>
+        <strong>Property Profit Share:</strong> {{ "%.2f"|format(meta.property_profit_share_effective) }}%<br>
+        {% endif %}
+        <strong>Developer Bonus:</strong> {{ "%.2f"|format(meta.developer_bonus) }}%<br>
+        <strong>Constructor Bonus:</strong> {{ "%.2f"|format(meta.constructor_bonus) }}%<br>
+        <strong>Investor Bonus:</strong> {{ "%.2f"|format(meta.investor_bonus) }}%
+    </div>
+    
+    <div class="summary-info" style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 4px;">
+        <h3 style="margin-top: 0;">Share Budget Breakdown</h3>
+        <div><strong>Base Pool:</strong> {{ "%.2f"|format(meta.base_pool) }}%</div>
+        <div><strong>Role Pools:</strong> Dev {{ "%.2f"|format(meta.developer_bonus) }}%, Const {{ "%.2f"|format(meta.constructor_bonus) }}%, Inv {{ "%.2f"|format(meta.investor_bonus) }}% (sum {{ "%.2f"|format(meta.role_pool) }}%)</div>
+        {% if meta.property_pool > 0 %}
+        <div><strong>Property Pool:</strong> Base {{ "%.2f"|format(meta.property_base_share) }}% + Profit {{ "%.2f"|format(meta.property_profit_share_effective) }}% = {{ "%.2f"|format(meta.property_pool) }}%</div>
+        {% endif %}
+        <div style="margin-top: 10px; font-weight: bold;"><strong>Total:</strong> {{ "%.2f"|format(meta.total_pct_sum) }}%</div>
+    </div>
+    
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Payment (€)</th>
+            <th>Base Share (%)</th>
+            <th>Role Bonus (%)</th>
+            <th>Property Share (%)</th>
+            <th>Equity Share (%)</th>
+            <th>Profit Share (%)</th>
+            <th>Final Share Value (€)</th>
+            <th>Profit Value (€)</th>
+        </tr>
+        {% for result in results %}
+        <tr>
+            <td>{{ result.name }}</td>
+            <td>{{ result.role }}</td>
+            <td>{{ "%.2f"|format(result.payment) }}</td>
+            <td>{{ "%.2f"|format(result.share) }}</td>
+            <td>{{ "%.2f"|format(result.bonus) }}</td>
+            <td>{{ "%.2f"|format(result.profit_bonus) }}</td>
+            <td>{{ "%.2f"|format(result.total_share) }}</td>
+            <td>{{ "%.2f"|format(result.profit_share if result.profit_share is not none else result.total_share) }}</td>
+            <td>{{ "%.2f"|format(meta.sale_price * result.total_share / 100) }}</td>
+            <td>{{ "%.2f"|format(meta.project_profit * (result.profit_share if result.profit_share is not none else result.total_share) / 100) }}</td>
+        </tr>
+        {% endfor %}
+        <tr style="font-weight: bold; background-color: #f8f9fa;">
+            <td colspan="2">Totals</td>
+            <td>{{ "%.2f"|format(meta.cash_total) }}</td>
+            <td>{{ "%.2f"|format(meta.total_base_shares) }}</td>
+            <td>{{ "%.2f"|format(meta.total_role_bonuses) }}</td>
+            <td>{{ "%.2f"|format(meta.total_property_shares) }}</td>
+            <td>{{ "%.2f"|format(meta.total_pct_sum_equity) }}</td>
+            <td>{{ "%.2f"|format(meta.total_pct_sum_profit) }}</td>
+            <td>{{ "%.2f"|format(meta.sale_price) }}</td>
+            <td>{{ "%.2f"|format(meta.project_profit) }}</td>
+        </tr>
+    </table>
+    
+    {% if meta.total_pct_sum > 100.02 or meta.total_pct_sum < 99.98 %}
+    <div class="warning" style="margin-top: 20px;">
+        <strong>Warning:</strong> Total shares ({{ "%.2f"|format(meta.total_pct_sum) }}%) deviate from 100% by more than ±0.02%. 
+        This may be due to rounding. Please review the calculation.
+    </div>
+    {% endif %}
+</div>
+

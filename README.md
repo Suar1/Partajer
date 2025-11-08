@@ -15,8 +15,43 @@ A web application built with Flask that calculates investment shares and profit 
 - PDF export with signature fields
 - Multiple calculation comparison
 - Automatic profit distribution calculations
+- Comprehensive validation and error handling
+- Production-ready with Docker support
+
+## Calculation Model
+
+The calculator uses a precise Decimal-based calculation model to avoid floating-point errors:
+
+### Base Share Calculation
+- **Base Share** = (Individual Payment / Total Investment) × 100
+- Base shares are calculated proportionally based on each investor's payment relative to the total investment
+- If total investment is zero, base shares are set to 0%
+
+### Role Bonus Pools
+- Each role (Developer, Constructor, Investor) has a total bonus percentage pool
+- The pool is divided **equally** among all members with that role
+- Example: If Developer bonus pool is 40% and there are 2 developers, each gets 20%
+
+### Property Owner Shares
+- **Base Share**: Fixed percentage based on property value contribution (configurable)
+- **Profit Share**: Additional percentage that only applies if `sale_price > project_cost`
+- Profit share is added on top of base share and role bonus
+
+### Total Share Calculation
+For each participant:
+```
+Total Share = Base Share + Role Bonus + Profit Share (if applicable)
+```
+
+### Validation Rules
+- Sum of all total shares must not exceed 100%
+- If total shares are between 95% and 100%, a warning is shown
+- If total shares exceed 100%, calculation is blocked with an error
+- Profit-based bonuses are zero if sale price ≤ project cost
 
 ## Setup
+
+### Development Setup
 
 1. Create a virtual environment:
 ```bash
@@ -35,28 +70,126 @@ source venv/bin/activate
 
 3. Install dependencies:
 ```bash
-pip install flask
+pip install -r requirements.txt
 ```
 
-4. Run the application:
+4. Set environment variables (optional):
 ```bash
-python app.py
+export SECRET_KEY="your-secret-key-here"
+export FLASK_DEBUG="true"  # For development
 ```
 
-5. Open your browser and navigate to:
+5. Run the application:
+```bash
+# Development mode
+make dev
+# or
+flask run
+
+# Production mode
+gunicorn -c gunicorn.conf.py wsgi:app
+```
+
+6. Open your browser and navigate to:
 ```
 http://127.0.0.1:5000
 ```
+
+### Docker Setup
+
+1. Build the Docker image:
+```bash
+docker build -t investment-calculator .
+```
+
+2. Run the container:
+```bash
+docker run -p 5000:5000 \
+  -e SECRET_KEY="your-secret-key" \
+  -e FLASK_ENV=production \
+  investment-calculator
+```
+
+3. Access the application at `http://localhost:5000`
+
+### Environment Variables
+
+- `SECRET_KEY`: Flask secret key for session management (required in production)
+- `FLASK_DEBUG`: Set to `"true"` for development, `"false"` for production
+- `FLASK_ENV`: Set to `production` for production deployment
+- `LOG_LEVEL`: Logging level (default: `info`)
 
 ## Usage
 
 1. Set the role bonus percentages for each type of contributor
 2. Enter the project cost and sale price
-3. Add property owner details if applicable
+3. Add property owner details if applicable (optional)
 4. Add investors with their roles and payments
 5. Click Calculate to see the results
 6. Use "New Calculation" to compare different scenarios
 7. Export results to PDF with signature fields
+
+## Development
+
+### Running Tests
+
+```bash
+make test
+# or
+pytest tests/ -v --cov=app --cov-report=term-missing
+```
+
+### Code Quality
+
+```bash
+# Format code
+make format
+
+# Lint code
+make lint
+```
+
+### Makefile Commands
+
+- `make install` - Install dependencies
+- `make run` - Run Flask development server
+- `make dev` - Run with auto-reload
+- `make test` - Run tests with coverage
+- `make lint` - Run linters
+- `make format` - Format code
+- `make clean` - Clean cache files
+
+## Project Structure
+
+```
+calc/
+├── app/
+│   ├── __init__.py          # Flask app factory
+│   ├── config.py             # Configuration
+│   ├── routes.py             # Route handlers
+│   ├── forms.py              # Flask-WTF forms
+│   ├── services/
+│   │   ├── calculator.py    # Core calculation logic
+│   │   ├── validators.py     # Validation functions
+│   │   └── models.py         # Pydantic models
+│   ├── templates/
+│   │   ├── base.html
+│   │   ├── index.html
+│   │   ├── results.html
+│   │   └── _banners.html
+│   └── static/
+│       ├── css/style.css
+│       └── js/app.js
+├── tests/
+│   ├── test_calculator.py
+│   └── test_validators.py
+├── requirements.txt
+├── Dockerfile
+├── gunicorn.conf.py
+├── wsgi.py
+├── Makefile
+└── README.md
+```
 
 ## License
 

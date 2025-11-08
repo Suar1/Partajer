@@ -1,0 +1,422 @@
+body { 
+    font-family: Arial, sans-serif; 
+    margin: 40px; 
+    background-color: #f5f5f5;
+}
+h1 { margin-bottom: 30px; }
+.summary-info {
+    background-color: #e9ecef;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    line-height: 1.6;
+}
+.warning { 
+    background-color: #fff3cd; 
+    color: #856404; 
+    padding: 12px; 
+    margin: 20px 0;
+    border-radius: 4px;
+}
+.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 12px;
+    margin: 20px 0;
+    border-radius: 4px;
+}
+.info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    padding: 12px;
+    margin: 20px 0;
+    border-radius: 4px;
+}
+.role-section {
+    background-color: #f8f9fa;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+.role-info {
+    color: #666;
+    font-style: italic;
+    margin: 10px 0 20px 0;
+}
+label {
+    display: inline-block;
+    width: 180px;
+}
+input[type="text"],
+input[type="number"],
+select {
+    width: 200px;
+    padding: 4px 8px;
+    margin: 2px 0;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+.investor-box {
+    background: white;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+.button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-right: 10px;
+    font-size: 14px;
+}
+.button:hover {
+    background-color: #45a049;
+}
+.export-button {
+    background-color: #2196F3;
+}
+.export-button:hover {
+    background-color: #1976D2;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: white;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+th {
+    background-color: #f5f5f5;
+}
+.current-split {
+    color: #666;
+    font-style: italic;
+    margin-left: 180px;
+    font-size: 0.9em;
+}
+.hidden {
+    display: none !important;
+}
+.field-row {
+    margin: 8px 0;
+}
+#investors {
+    margin: 20px 0;
+}
+.role-distribution {
+    background-color: #e3f2fd;
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 4px;
+    border-left: 4px solid #1976d2;
+}
+.role-stat {
+    margin: 5px 0;
+    color: #333;
+}
+#live-distribution {
+    transition: all 0.3s ease;
+}
+.property-section {
+    background-color: #e8f5e9;
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 4px;
+    border-left: 4px solid #43a047;
+}
+.optional-label {
+    color: #666;
+    font-size: 0.9em;
+    margin-left: 5px;
+}
+.property-info {
+    color: #666;
+    font-style: italic;
+    margin: 5px 0 15px 180px;
+    font-size: 0.9em;
+}
+.load-button {
+    background-color: #7e57c2;
+}
+.load-button:hover {
+    background-color: #673ab7;
+}
+.info-panel {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    padding: 15px;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    min-width: 250px;
+    z-index: 1000;
+}
+#app-footer {
+    margin-top: 40px;
+    padding-top: 16px;
+    border-top: 1px solid #ddd;
+    color: #555;
+    font-size: 0.95em;
+    text-align: center;
+}
+#app-footer a {
+    text-decoration: none;
+}
+#app-footer a:hover {
+    text-decoration: underline;
+}
+.calculation-panel {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 320px;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 1000;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+.calc-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
+}
+.calculation-panel h3 {
+    margin: 0;
+    color: #333;
+    font-size: 1.2em;
+    flex: 1;
+}
+.calc-panel-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.calc-visibility-toggle {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+}
+.calc-visibility-toggle input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.calc-checkmark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #4caf50;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+.checkmark-text {
+    display: inline-block;
+    transition: opacity 0.2s ease;
+}
+.calc-visibility-toggle input[type="checkbox"]:not(:checked) + .calc-checkmark {
+    background: #f5f5f5;
+    border-color: #ccc;
+}
+.calc-visibility-toggle input[type="checkbox"]:not(:checked) + .calc-checkmark .checkmark-text {
+    opacity: 0;
+}
+.calc-visibility-toggle:hover .calc-checkmark {
+    border-color: #999;
+    transform: scale(1.05);
+}
+.calc-toggle-btn {
+    background: transparent;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    color: #666;
+    transition: all 0.2s ease;
+}
+.calc-toggle-btn:hover {
+    background: #f5f5f5;
+    border-color: #999;
+    color: #333;
+}
+.calc-toggle-icon {
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 1;
+    transition: transform 0.2s ease;
+}
+.calculation-panel.collapsed #calc-content {
+    display: none;
+}
+.calculation-panel.collapsed .calc-toggle-icon {
+    transform: rotate(180deg);
+}
+.calculation-panel.hidden {
+    display: none !important;
+}
+.calc-show-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #4caf50;
+    color: white;
+    border: 2px solid white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    transition: all 0.2s ease;
+}
+.calc-show-btn:hover {
+    background: #45a049;
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+.calc-item {
+    margin: 12px 0;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 0.95em;
+}
+.calc-item-label {
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 4px;
+}
+.calc-item-value {
+    color: #333;
+    font-size: 1.1em;
+}
+.calc-item.error {
+    background-color: #ffebee;
+    border-left: 4px solid #f44336;
+}
+.calc-item.warning {
+    background-color: #fff3e0;
+    border-left: 4px solid #ff9800;
+}
+.calc-item.success {
+    background-color: #e8f5e9;
+    border-left: 4px solid #4caf50;
+}
+.field-highlight-error {
+    background-color: #ffebee !important;
+    border: 2px solid #f44336 !important;
+}
+.field-highlight-warning {
+    background-color: #fff3e0 !important;
+    border: 2px solid #ff9800 !important;
+}
+.calc-total {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 2px solid #e0e0e0;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+.calc-breakdown {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* Help icons and tooltips */
+.help-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.help-ico {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 1;
+    background: #e0e7ff;
+    color: #1e40af;
+    border: 1px solid #c7d2fe;
+    cursor: help;
+    position: relative;
+}
+
+.help-ico.warn {
+    background: #fee2e2;
+    color: #b91c1c;
+    border-color: #fecaca;
+}
+
+.help-ico:focus {
+    outline: 2px solid #93c5fd;
+    outline-offset: 2px;
+}
+
+.tooltip {
+    position: absolute;
+    z-index: 9999;
+    min-width: 220px;
+    max-width: 360px;
+    background: #111827;
+    color: #f9fafb;
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    line-height: 1.4;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: translateX(-50%);
+    left: 50%;
+    bottom: calc(100% + 8px);
+    display: none;
+    white-space: normal;
+    pointer-events: none;
+}
+
+.help-ico:hover .tooltip,
+.help-ico:focus .tooltip {
+    display: block;
+}
+
+.tooltip b {
+    color: #fff;
+}
+
